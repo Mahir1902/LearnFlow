@@ -21,7 +21,7 @@ export const embedAndStore = async (videoUrl: string) => {
     
         const transcript = youtubeDoc[0].pageContent
         const videoId = youtubeDoc[0].metadata.source
-        // const description = youtubeDoc[0].metadata.description
+        const description = youtubeDoc[0].metadata.description
     
         const splitter = new RecursiveCharacterTextSplitter({
             chunkSize: 1000,
@@ -42,6 +42,7 @@ export const embedAndStore = async (videoUrl: string) => {
         })
     
         await vectorStore.addDocuments(chunks) 
+        
     } catch (error) {
         console.log(error)
     }

@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 type AuthResponse = {
   error: null | string;
@@ -24,36 +25,49 @@ export async function signUpNewUser(formData: FormData): Promise<AuthResponse> {
 
   const { data: signUpData, error } = await supabase.auth.signUp(data);
 
-  console.log(signUpData);
-  console.log(error);
+  if(error) {
+    return {
+      success: false,
+      error: error?.message,
+      data: null
+    }
+  } else if (signUpData?.user?.identities?.length === 0) {
+    return {
+      success: false,
+      error: 'User with email already exists',
+      data: null
+    }
+  }
 
+  revalidatePath("/dashboard", 'layout')
   return {
-    error: error?.message || "Something went wrong with sign up",
-    success: !error,
-    data: signUpData || null,
-  };
+    success: true,
+    error: null,
+    data: signUpData
+  }
 }
 
-
 export async function signInWithEmail(formData: FormData): Promise<AuthResponse> {
-
   const supabase = await createClient();
 
   const data = {
     email: formData.get("email") as string,
     password: formData.get("password") as string,
-  }
+  };
 
-  const { data: signInData, error } = await supabase.auth.signInWithPassword(data)
+  const { data: signInData, error } = await supabase.auth.signInWithPassword(data);
 
-  console.log(signInData)
-  console.log(error)
+  if(error) {
+    return {
+      success: false,
+      error: error?.message,
+      data: null
+    }
+  } 
 
-  return {
-    error: error?.message || "Something went wrong with logging in",
-    success: !error,
-    data: signInData || null,
-  }
+  // create a new user in the database
+
+
 }
 
 export async function logoutUser(): Promise<void> {
