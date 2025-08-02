@@ -14,8 +14,9 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { chats } from "@/lib/db/schema";
 
 const data = [
   {
@@ -38,15 +39,29 @@ const data = [
   },
  ]
 
-export function NavMain() {
+type UserChats = typeof chats.$inferSelect
+
+export function NavMain({userChats}: {userChats: UserChats[]}) {
 
   const pathname = usePathname()
+  const router = useRouter()
+  console.log(pathname)
+  const chatId = pathname.split('/').pop()
   
 
 
   return (
     <SidebarGroup>
-      <SidebarMenu className="gap-2">
+      <SidebarGroupLabel>Chats</SidebarGroupLabel>
+      {/* map over chats in db */}
+      <div className="flex flex-col gap-2">
+        {userChats.map((chat, index) => (
+          <div key={index} onClick={() => router.push(`/chat/${chat.id}`)} className={`rounded-md ${chatId === chat.id ? 'bg-sidebar-item-active' : ''} hover:bg-sidebar-item-active/50 text-sm p-2 truncate`}>
+            {chat.title}
+          </div>
+        ))}
+      </div>
+      {/* <SidebarMenu className="gap-2">
         {data.map((item) => (
           <Link href={item.url} key={item.title} className={cn( 'rounded-sm  ',pathname === item.url ? " bg-blue-500 text-white" : 'text-muted-foreground ')}>
             <SidebarMenuItem key={item.title}>
@@ -57,7 +72,7 @@ export function NavMain() {
             </SidebarMenuItem>
           </Link>
         ))}
-      </SidebarMenu>
+      </SidebarMenu> */}
     </SidebarGroup>
   );
 }

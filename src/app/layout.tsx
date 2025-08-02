@@ -1,8 +1,12 @@
+
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/Providers/theme-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ReactQueryProvider } from "@/providers/rect-query-provider";
+import {ReactQueryDevtools} from "@tanstack/react-query-devtools"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,16 +38,19 @@ export default function RootLayout({
       <body
         className={` ${spaceGrotesk.className} antialiased h-screen w-screen`}
       >
+        <ReactQueryProvider>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
+          >
 
         {children}
         <Toaster richColors/>
         </ThemeProvider>
+        {/* <ReactQueryDevtools initialIsOpen={false}/> */}
+        </ReactQueryProvider>
       </body>
     </html>
   );

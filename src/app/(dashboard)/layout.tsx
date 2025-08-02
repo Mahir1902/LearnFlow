@@ -10,10 +10,12 @@ export default function RootLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <div>
-          <SidebarTrigger className="-ml-1" />
+        <div className="flex h-screen flex-col">
+          <div>
+            <SidebarTrigger className="-ml-1" />
+          </div>
+          <main className="flex-1 flex pt-0 overflow-hidden">{children}</main>
         </div>
-        <main className=" flex flex-1 flex-col gap-4 pt-0">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

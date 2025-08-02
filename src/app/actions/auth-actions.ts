@@ -18,6 +18,7 @@ export async function signUpNewUser(formData: FormData): Promise<AuthResponse> {
     options: {
       data: {
         fullname: formData.get("fullname") as string,
+        email: formData.get("email") as string,
       },
       emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
     },
@@ -64,6 +65,12 @@ export async function signInWithEmail(formData: FormData): Promise<AuthResponse>
       data: null
     }
   } 
+
+  return {
+    success: true,
+    error: null,
+    data: signInData
+  }
 
   // create a new user in the database
 

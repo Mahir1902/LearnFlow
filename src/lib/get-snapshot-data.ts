@@ -22,11 +22,19 @@ export const getSnapshotData = async (snapshotId: string) => {
         },
       );
 
-      return snapshotDataResponse.data;
+      return {
+        success: true,
+        data: snapshotDataResponse.data,
+      }
     } else {
       return null;
     }
   } catch (error) {
     console.log(error);
+    return {
+      success: false,
+      error: error || 'Failed to get snapshot data',
+
+    }
   }
 };
