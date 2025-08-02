@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin '@tailwindcss/typography';
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -35,6 +37,9 @@
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
+  --color-sidebar-item-active: #343434;
+  --color-background-secondary: #212121;
+  --color-highlight-blue: #518BC5;
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --radius-sm: calc(var(--radius) - 4px);

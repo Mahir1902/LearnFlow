@@ -6,7 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
+import { retriveVideoInfo } from "@/app/actions/retrive-video-info";
+import { useState } from "react";
+import { embedAndStore } from "@/app/actions/embed-and-store";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // This is sample data.
 
@@ -20,6 +25,11 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function YoutubeLinkForm() {
+
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -27,8 +37,30 @@ export default function YoutubeLinkForm() {
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      setIsLoading(true)
+      const {data: videoData, success: videoDataSuccess} = await retriveVideoInfo(data.videoUrl)
+      console.log('videoData', videoData)
+      if(videoData && videoDataSuccess) {
+      const res = await embedAndStore(data.videoUrl, videoData)
+      if(res?.success && res?.chatId) {
+        toast.success('Video embedded and stored successfully')
+        form.reset()
+        router.push(`/chat/${res.chatId}`)
+      } else {
+        toast.error('Failed to embed and store video')
+      }
+    }
+
+      
+      setIsLoading(false)
+
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
   };
 
   return (
@@ -45,9 +77,18 @@ export default function YoutubeLinkForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-fit">
-          <Plus />
-          Add video
+        <Button type="submit" className="w-fit" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Plus />
+              Add video
+            </>
+          )}
         </Button>
       </form>
     </Form>

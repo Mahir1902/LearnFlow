@@ -16,17 +16,7 @@ const formSchema = z.object({
 
 export default function Page() {
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      videoUrl: "",
-    },
-  });
-
-
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    await embedAndStore(values.videoUrl);
-  };
+  
 
   return (
     // <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -49,7 +39,7 @@ export default function Page() {
 
     //   </Form>
     // </div>
-    <div className="border border-red-500 h-full w-full">
+    <div className="border h-full w-full">
       
     </div>
   );

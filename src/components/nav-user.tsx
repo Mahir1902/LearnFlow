@@ -55,7 +55,7 @@ export  function NavUser({
 
   const { isMobile } = useSidebar()
 
-  console.log(user)
+  
 
   const initials = user.name.split(' ').map((name) => name[0]).join('')
 
